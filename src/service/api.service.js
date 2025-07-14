@@ -5,11 +5,12 @@ class ApiService {
   static async register(registerDto) {
     try {
       const { name, email, password } = registerDto;
-      const user = await userModel.findOne({ name, email, password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)) });
+      const user = await userModel.findOne({ name, email });
       if (user) {
         throw new Error('User already exists');
       }
-      return user;
+      const userCreated = await userModel.create({ name, email, password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)) });
+      return userCreated;
     } catch (error) {
       throw error;
     }
