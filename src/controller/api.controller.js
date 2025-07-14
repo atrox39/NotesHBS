@@ -21,8 +21,15 @@ class ApiController {
 
   static async login(req, res) {
     try {
-      const { email, password } = req.body;
+      const { email, password, type } = req.body;
       const user = await ApiService.login({ email, password });
+      if (type === 'session') {
+        req.session.user = user;
+      } else {
+        const token = jwt.sign({ id: user._id }, SECRET_KEY);
+        res.json({ user, jwt: token });
+        return;
+      }
       res.json(user);
     } catch (error) {
       res.status(500).json({ error: error.message });
