@@ -5,6 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const handlebars = require('express-handlebars');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
@@ -14,6 +15,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+}));
 
 app.engine('hbs', handlebars.engine({
   extname: 'hbs',
